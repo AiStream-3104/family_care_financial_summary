@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="家族3人の施設入所・医療・介護・障害福祉に関する資金計画。2026年実質円によるシナリオ比較と年次キャッシュフロー。">
+  <meta name="color-scheme" content="light">
+  <title>家族3人の生活・介護支援 資金計画</title>
+  <style>
+    :root{
+      --ink:#142b35;--muted:#5a6d73;--teal:#2c7a7b;--teal-dark:#1f5e60;
+      --teal-pale:#dcefed;--panel:#f1f4f4;--line:#b9c8ca;--white:#fff;
+      --orange:#c96a38;--orange-pale:#f7e8df;--shadow:0 12px 30px rgba(20,43,53,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#eef3f3;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;line-height:1.65}
+    a{color:var(--teal-dark)}
+    .site-header{background:linear-gradient(135deg,#173f4b,#2c7a7b);color:#fff}
+    .header-inner,.main,.footer-inner{width:min(1180px,calc(100% - 32px));margin:auto}
+    .header-inner{padding:42px 0 34px}
+    .eyebrow{margin:0 0 8px;font-size:.78rem;letter-spacing:.12em;font-weight:700;opacity:.8}
+    h1{margin:0;font-size:clamp(1.8rem,4vw,3rem);line-height:1.25}
+    .lead{max-width:760px;margin:12px 0 0;color:#e8f5f4}
+    .meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;font-size:.88rem;color:#d7eceb}
+    .main{margin-top:-1px;padding:24px 0 56px}
+    .tabs-shell{position:sticky;top:0;z-index:10;background:rgba(238,243,243,.95);backdrop-filter:blur(8px);padding:10px 0}
+    .tabs{display:flex;gap:8px;overflow-x:auto;padding:2px;scrollbar-width:thin}
+    .tab{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer}
+    .tab:hover{border-color:var(--teal)}
+    .tab[aria-selected="true"]{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff}
+    .tab-panel{display:none;background:#fff;border:1px solid #d6e0e1;border-radius:18px;box-shadow:var(--shadow);padding:clamp(22px,4vw,44px);margin-top:14px}
+    .tab-panel.active{display:block}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;border-bottom:2px solid var(--teal);padding-bottom:14px;margin-bottom:24px}
+    h2{font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.3;margin:0}
+    h3{font-size:1.15rem;margin:28px 0 12px}
+    .section-note,.small{font-size:.86rem;color:var(--muted)}
+    .section-note{margin:0;text-align:right}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+    table{width:100%;border-collapse:collapse;min-width:720px}
+    th,td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+    thead th{background:var(--teal-dark);color:#fff;text-align:center;white-space:nowrap}
+    tbody th{background:#edf3f3;text-align:left;white-space:nowrap}
+    tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+    td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+    tr.emphasis th,tr.emphasis td{background:var(--teal-pale);font-weight:700}
+    .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:20px 0}
+    .metric{background:#fff;padding:22px}
+    .metric strong{display:block;font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.2;font-variant-numeric:tabular-nums}
+    .metric span{display:block;margin-top:7px;color:var(--muted);font-size:.88rem}
+    .scenario-chart{display:grid;gap:16px;margin:20px 0 28px}
+    .bar-row{display:grid;grid-template-columns:145px 1fr 120px;gap:12px;align-items:center}
+    .bar-track{height:28px;background:var(--panel);border-radius:4px;overflow:hidden}
+    .bar-fill{height:100%;background:var(--teal)}
+    .bar-row.high .bar-fill{background:var(--orange)}
+    .bar-label{font-weight:700}
+    .bar-value{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+    .support-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .support-item{border-left:5px solid var(--teal);background:var(--panel);padding:15px 17px}
+    .support-item strong{display:block;margin-bottom:4px}
+    .chart-box{background:var(--panel);border:1px solid #dce4e5;border-radius:12px;padding:12px}
+    .legend{display:flex;justify-content:flex-end;gap:18px;flex-wrap:wrap;font-size:.86rem;font-weight:700;margin:0 8px 2px}
+    .legend span::before{content:"";display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+    .legend .line::before{height:3px;vertical-align:3px}
+    #cashflow-chart{display:block;width:100%;height:auto;min-height:320px}
+    .key-values{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:12px 0 0;color:var(--teal-dark);font-weight:800}
+    .callout{margin-top:22px;border-left:5px solid var(--orange);background:var(--orange-pale);padding:14px 18px}
+    footer{background:#173f4b;color:#d7e6e8}
+    .footer-inner{padding:25px 0;font-size:.82rem}
+    .footer-inner p{margin:4px 0}
+    .noscript{padding:12px;background:#fff3cd;color:#664d03}
+    @media(max-width:760px){
+      .header-inner,.main,.footer-inner{width:min(100% - 20px,1180px)}
+      .header-inner{padding:30px 4px}
+      .tab-panel{border-radius:12px;padding:20px 14px}
+      .section-head{display:block}
+      .section-note{text-align:left;margin-top:8px}
+      .summary-strip{grid-template-columns:repeat(2,1fr)}
+      .support-grid{grid-template-columns:1fr}
+      .bar-row{grid-template-columns:105px 1fr 88px;font-size:.82rem}
+      #cashflow-chart{min-width:800px}
+      .chart-scroll{overflow-x:auto}
+    }
+    @media print{
+      body{background:#fff;font-size:10pt}
+      .site-header{background:#fff;color:var(--ink);border-bottom:2px solid var(--teal)}
+      .lead,.meta{color:var(--muted)}
+      .header-inner{padding:15mm 0 8mm}
+      .tabs-shell{display:none}
+      .main{width:100%;padding:0}
+      .tab-panel{display:block!important;border:0;box-shadow:none;border-radius:0;padding:10mm 12mm;margin:0;break-after:page}
+      .tab-panel:last-child{break-after:auto}
+      .table-wrap{overflow:visible}
+      .chart-scroll{overflow:visible}
+      footer{background:#fff;color:var(--muted);border-top:1px solid var(--line)}
+      a{text-decoration:none;color:inherit}
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <p class="eyebrow">FAMILY CARE FINANCIAL PLAN</p>
+      <h1>家族3人の生活・介護支援 資金計画</h1>
+      <p class="lead">父・母・姉の施設入所、医療、介護、障害福祉に関する必要資金を、標準ケースを中心に整理した説明資料です。</p>
+      <div class="meta"><span>基準年：2026年</span><span>金額：2026年実質円</span><span>更新日：2026年9月20日</span></div>
+    </div>
+  </header>
+
+  <main class="main">
+    <noscript><div class="noscript">JavaScriptが無効な場合はタブ切替ができないため、印刷表示ですべての内容をご確認ください。</div></noscript>
+    <div class="tabs-shell">
+      <nav class="tabs" role="tablist" aria-label="資金計画の内容">
+        <button class="tab" role="tab" id="tab-assumptions" aria-controls="assumptions" aria-selected="true">1 前提条件</button>
+        <button class="tab" role="tab" id="tab-scenarios" aria-controls="scenarios" aria-selected="false">2 ケース別必要資金</button>
+        <button class="tab" role="tab" id="tab-income" aria-controls="income" aria-selected="false">3 年金・補助</button>
+        <button class="tab" role="tab" id="tab-cashflow" aria-controls="cashflow" aria-selected="false">4 年次キャッシュフロー</button>
+        <button class="tab" role="tab" id="tab-costbasis" aria-controls="costbasis" aria-selected="false">5 支出根拠</button>
+      </nav>
+    </div>
+
+    <section class="tab-panel active" id="assumptions" role="tabpanel" aria-labelledby="tab-assumptions">
+      <div class="section-head"><h2>算出の前提は「2026年開始・実質0%」</h2><p class="section-note">終了年齢は死亡予測ではなく、資金計画上の計算期間</p></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>項目</th><th>父</th><th>母</th><th>姉</th><th>共通設定</th></tr></thead>
+          <tbody>
+            <tr><th>開始時年齢</th><td class="num">85歳</td><td class="num">85歳</td><td class="num">45歳</td><td>開始 2026年1月</td></tr>
+            <tr><th>年金（月額）</th><td class="num">15.0万円</td><td class="num">7.0万円</td><td class="num">5.0万円</td><td>合計 27.0万円</td></tr>
+            <tr><th>入居開始</th><td>2026年4月</td><td>2026年4月</td><td>2026年4月</td><td>年途中は月単位計算</td></tr>
+            <tr><th>標準の住まい</th><td>認知症GH → 特養</td><td>介護医療院等</td><td>障害者GH</td><td>個別見積り未取得</td></tr>
+            <tr><th>計画終了年齢</th><td class="num">90歳</td><td class="num">90歳</td><td class="num">90歳</td><td>高コストケースは95歳</td></tr>
+            <tr><th>実質改定率</th><td class="num">0%</td><td class="num">0%</td><td class="num">0%</td><td>年金・費用・運用とも0%</td></tr>
+            <tr><th>名目入力値</th><td>施設費 2.0%</td><td>医療介護 2.5%</td><td>生活費 1.5%</td><td>年金・運用 各1.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">施設費・一時費用はモデル上の仮定です。公的支援は自動適用せず、ケースDのみ条件付きで反映しています。</div>
+    </section>
+
+    <section class="tab-panel" id="scenarios" role="tabpanel" aria-labelledby="tab-scenarios" hidden>
+      <div class="section-head"><h2>必要資金は3,483.9万円〜1億5,827.5万円</h2><p class="section-note">施設水準・支援適用・計画期間で差が生じる</p></div>
+      <div class="scenario-chart" aria-label="ケース別必要資金">
+        <div class="bar-row"><span class="bar-label">A 低コスト</span><div class="bar-track"><div class="bar-fill" style="width:22.0%"></div></div><span class="bar-value">3,483.9万円</span></div>
+        <div class="bar-row"><span class="bar-label">B 標準</span><div class="bar-track"><div class="bar-fill" style="width:43.0%"></div></div><span class="bar-value">6,802.5万円</span></div>
+        <div class="bar-row high"><span class="bar-label">C 高コスト</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-value">1億5,827.5万円</span></div>
+        <div class="bar-row"><span class="bar-label">D 公的支援</span><div class="bar-track"><div class="bar-fill" style="width:27.5%"></div></div><span class="bar-value">4,360.4万円</span></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ケース</th><th>月額支出</th><th>月額不足</th><th>入所時費用</th><th>終了時費用</th><th>主な根拠</th></tr></thead>
+          <tbody>
+            <tr><th>A 低コスト</th><td class="num">29.7万円</td><td class="num">2.7万円</td><td class="num">115万円</td><td class="num">320万円</td><td>公的施設・多床室中心</td></tr>
+            <tr class="emphasis"><th>B 標準</th><td class="num">51.2万円</td><td class="num">24.2万円</td><td class="num">240万円</td><td class="num">480万円</td><td>父GH→特養、母医療対応、姉GH</td></tr>
+            <tr><th>C 高コスト</th><td class="num">89.5万円</td><td class="num">62.5万円</td><td class="num">550万円</td><td class="num">750万円</td><td>民間個室・支援厚め・95歳</td></tr>
+            <tr><th>D 公的支援</th><td class="num">38.7万円</td><td class="num">11.7万円</td><td class="num">140万円</td><td class="num">320万円</td><td>低所得者向け制度を条件付き反映</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">必要資金は月次不足の累積最大額で、一時費用と各計画終了時費用を含みます。</p>
+    </section>
+
+    <section class="tab-panel" id="income" role="tabpanel" aria-labelledby="tab-income" hidden>
+      <div class="section-head"><h2>年金収入は月27万円・年324万円</h2><p class="section-note">補助制度の多くは現金収入ではなく自己負担の軽減</p></div>
+      <div class="summary-strip">
+        <div class="metric"><strong>15.0万円</strong><span>父・厚生年金／年180万円</span></div>
+        <div class="metric"><strong>7.0万円</strong><span>母・国民年金／年84万円</span></div>
+        <div class="metric"><strong>5.0万円</strong><span>姉・障害年金／年60万円</span></div>
+        <div class="metric"><strong>27.0万円</strong><span>家族合計／年324万円</span></div>
+      </div>
+      <h3>条件付きで支出を下げる制度</h3>
+      <div class="support-grid">
+        <div class="support-item"><strong>介護保険負担限度額認定</strong>父・母の居住費、食費が対象候補。所得・資産・居室要件を確認。</div>
+        <div class="support-item"><strong>高額介護・医療介護合算</strong>父・母の介護・医療自己負担を軽減する可能性。所得区分と申請を確認。</div>
+        <div class="support-item"><strong>障害者GH家賃補助</strong>姉が低所得等の要件を満たす場合、家賃について月上限1万円。</div>
+        <div class="support-item"><strong>自立支援医療</strong>姉の精神科通院、薬、訪問看護等が対象候補。指定医療機関と受給者証を確認。</div>
+        <div class="support-item"><strong>指定難病医療費助成</strong>母は確定診断等の要件を満たす場合に対象候補。現時点では未反映。</div>
+        <div class="support-item"><strong>自治体助成・生活保護</strong>資産、収入、他制度の利用状況を踏まえ、自治体が個別に判定。</div>
+      </div>
+      <p class="small">ケースA〜Dの年金額は同一です。ケースDでは補助相当額を施設費等の減額としてモデル化しています。</p>
+    </section>
+
+    <section class="tab-panel" id="cashflow" role="tabpanel" aria-labelledby="tab-cashflow" hidden>
+      <div class="section-head"><h2>標準ケースでは毎年の支出が収入を上回る</h2><p class="section-note">収入はプラス、支出はマイナス、折れ線は年間収支</p></div>
+      <div class="chart-box">
+        <div class="legend"><span style="--c:#1f5e60">収入</span><span style="--c:#c96a38">支出</span><span class="line" style="--c:#142b35">収支差額</span></div>
+        <div class="chart-scroll"><svg id="cashflow-chart" viewBox="0 0 1200 430" role="img" aria-label="2026年から2071年までの年次収入、支出、収支差額"></svg></div>
+      </div>
+      <div class="key-values"><span>2026 ▲472.8万円</span><span>2031 ▲421.2万円</span><span>2032〜2070 ▲121.2万円/年</span><span>2071 ▲180.0万円</span></div>
+      <h3>節目年の年次キャッシュフロー</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>年</th><th>年金収入</th><th>継続費＋一時費用</th><th>年間収支</th><th>累積必要資金</th><th>主な事象</th></tr></thead>
+          <tbody>
+            <tr><th>2026</th><td class="num">324.0万円</td><td class="num">796.8万円</td><td class="num">▲472.8万円</td><td class="num">472.8万円</td><td>3人入居、自宅整理・後見準備</td></tr>
+            <tr><th>2028</th><td class="num">324.0万円</td><td class="num">581.7万円</td><td class="num">▲257.7万円</td><td class="num">1,020.9万円</td><td>父がGHから特養へ転居</td></tr>
+            <tr><th>2031</th><td class="num">60.0万円</td><td class="num">481.2万円</td><td class="num">▲421.2万円</td><td class="num">1,895.7万円</td><td>父母の計画終了時費用</td></tr>
+            <tr><th>2040</th><td class="num">60.0万円</td><td class="num">181.2万円</td><td class="num">▲121.2万円</td><td class="num">2,986.5万円</td><td>姉の生活を継続</td></tr>
+            <tr><th>2070</th><td class="num">60.0万円</td><td class="num">181.2万円</td><td class="num">▲121.2万円</td><td class="num">6,622.5万円</td><td>姉の生活を継続</td></tr>
+            <tr class="emphasis"><th>2071</th><td class="num">0万円</td><td class="num">180.0万円</td><td class="num">▲180.0万円</td><td class="num">6,802.5万円</td><td>姉の計画終了時費用</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="costbasis" role="tabpanel" aria-labelledby="tab-costbasis" hidden>
+      <div class="section-head"><h2>支出根拠は月額費用と一時費用を分ける</h2><p class="section-note">標準ケース・父は2028年4月の転居前後を併記</p></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>項目</th><th>父</th><th>母</th><th>姉</th><th>内訳・根拠</th></tr></thead>
+          <tbody>
+            <tr><th>1 入所一時金</th><td class="num">35.0万円</td><td class="num">45.0万円</td><td class="num">30.0万円</td><td>敷金・家具寝具・移送・診断書等</td></tr>
+            <tr><th>2 死亡・葬送等一時金</th><td class="num">150.0万円</td><td class="num">150.0万円</td><td class="num">180.0万円</td><td>計画終了時に一度計上。葬送・納骨・退去・死後事務等</td></tr>
+            <tr><th>3 施設費見込／月</th><td class="num">12.1→7.1万円</td><td class="num">10.3万円</td><td class="num">9.7万円</td><td>家賃・食費・管理費・水道光熱費</td></tr>
+            <tr><th>4 一般生活費／月</th><td class="num">3.7→3.8万円</td><td class="num">3.0万円</td><td class="num">4.4万円</td><td>日用品・衣服・通信・交通・交際・金銭管理等</td></tr>
+            <tr><th>5 医療・介護等／月</th><td class="num">4.3→3.9万円</td><td class="num">2.7万円</td><td class="num">1.0万円</td><td>サービス自己負担・医療・薬・訪問看護・日中活動</td></tr>
+            <tr class="emphasis"><th>月額合計</th><td class="num">20.1→14.8万円</td><td class="num">16.0万円</td><td class="num">15.1万円</td><td>2026年4月額。父は2028年4月以降の金額も表示</td></tr>
+            <tr><th>個別確認事項</th><td>転居15.0万円</td><td>医療処置・看護加算</td><td>訪問看護・日中活動</td><td>父のみ一時費用計上。母・姉は利用量に応じ月額を更新</td></tr>
+            <tr><th>共通一時費用</th><td class="num">―</td><td class="num">―</td><td class="num">―</td><td>130.0万円：自宅整理80万円＋契約・後見準備50万円</td></tr>
+            <tr class="emphasis"><th>一時費用合計</th><td class="num">200.0万円</td><td class="num">195.0万円</td><td class="num">210.0万円</td><td>3人分605万円＋共通130万円＝735万円</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">個別施設の見積り未取得のためモデル上の仮定です。公的支援、母の医療処置、姉のサービス利用量等によって変動します。</div>
+    </section>
+  </main>
+
+  <footer><div class="footer-inner">
+    <p>本資料は資金計画上の概算であり、医療・法律・税務・制度利用の確定判断ではありません。</p>
+    <p>実際の申請・契約前に、自治体、医師、ケアマネジャー、相談支援専門員、社会福祉士、候補施設へ確認してください。</p>
+  </div></footer>
+
+  <script>
+    document.documentElement.classList.add("js");
+    const tabs=[...document.querySelectorAll('[role="tab"]')];
+    const panels=[...document.querySelectorAll('[role="tabpanel"]')];
+
+    function activate(id, updateHash=true){
+      if(!panels.some(p=>p.id===id)) id="assumptions";
+      tabs.forEach(tab=>{
+        const on=tab.getAttribute("aria-controls")===id;
+        tab.setAttribute("aria-selected",String(on));
+        tab.tabIndex=on?0:-1;
+      });
+      panels.forEach(panel=>{
+        const on=panel.id===id;
+        panel.classList.toggle("active",on);
+        panel.hidden=!on;
+      });
+      if(updateHash && location.hash!=="#"+id) history.replaceState(null,"","#"+id);
+      document.getElementById("tab-"+id)?.focus({preventScroll:true});
+    }
+    tabs.forEach((tab,i)=>{
+      tab.addEventListener("click",()=>activate(tab.getAttribute("aria-controls")));
+      tab.addEventListener("keydown",e=>{
+        if(!["ArrowRight","ArrowLeft","Home","End"].includes(e.key)) return;
+        e.preventDefault();
+        let next=i;
+        if(e.key==="ArrowRight") next=(i+1)%tabs.length;
+        if(e.key==="ArrowLeft") next=(i-1+tabs.length)%tabs.length;
+        if(e.key==="Home") next=0;
+        if(e.key==="End") next=tabs.length-1;
+        activate(tabs[next].getAttribute("aria-controls"));
+      });
+    });
+    addEventListener("hashchange",()=>activate(location.hash.slice(1),false));
+    activate(location.hash.slice(1)||"assumptions",false);
+
+    (function renderCashflow(){
+      const svg=document.getElementById("cashflow-chart");
+      const NS="http://www.w3.org/2000/svg";
+      const years=Array.from({length:46},(_,i)=>2026+i);
+      const income=years.map(y=>y <= 2030 ? 3.24 : (y <= 2070 ? 0.60 : 0));
+      const spend=years.map(y=>{
+        if(y===2026)return -7.968;if(y===2027)return -6.144;if(y===2028)return -5.817;
+        if(y===2029||y===2030)return -5.508;if(y===2031)return -4.812;
+        if(y<=2070)return -1.812;return -1.8;
+      });
+      const net=income.map((v,i)=>v+spend[i]);
+      const W=1200,H=430,L=68,R=22,T=22,B=60,min=-9,max=4;
+      const pw=W-L-R,ph=H-T-B;
+      const x=i=>L+i*pw/(years.length-1);
+      const y=v=>T+(max-v)*ph/(max-min);
+      const el=(name,attrs={})=>{const n=document.createElementNS(NS,name);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));return n};
+      [-8,-6,-4,-2,0,2,4].forEach(v=>{
+        svg.append(el("line",{x1:L,y1:y(v),x2:W-R,y2:y(v),stroke:v===0?"#71858a":"#c9d4d5","stroke-width":v===0?1.5:1}));
+        const tx=el("text",{x:L-10,y:y(v)+4,"text-anchor":"end",fill:"#5a6d73","font-size":"12"});
+        tx.textContent=v;svg.append(tx);
+      });
+      const bw=Math.max(3,pw/years.length*.28),zero=y(0);
+      years.forEach((yr,i)=>{
+        svg.append(el("rect",{x:x(i)-bw-1,y:y(income[i]),width:bw,height:zero-y(income[i]),fill:"#1f5e60"}));
+        svg.append(el("rect",{x:x(i)+1,y:zero,width:bw,height:y(spend[i])-zero,fill:"#c96a38"}));
+      });
+      const d=net.map((v,i)=>(i?"L":"M")+x(i)+" "+y(v)).join(" ");
+      svg.append(el("path",{d,fill:"none",stroke:"#142b35","stroke-width":"3","stroke-linejoin":"round"}));
+      net.forEach((v,i)=>svg.append(el("circle",{cx:x(i),cy:y(v),r:2.2,fill:"#142b35"})));
+      [2026,2030,2035,2040,2045,2050,2055,2060,2065,2071].forEach(yr=>{
+        const tx=el("text",{x:x(yr-2026),y:H-24,"text-anchor":"middle",fill:"#5a6d73","font-size":"12"});
+        tx.textContent=yr;svg.append(tx);
+      });
+      const unit=el("text",{x:L,y:14,fill:"#5a6d73","font-size":"12"});unit.textContent="百万円";svg.append(unit);
+    })();
+  </script>
+</body>
+</html>
